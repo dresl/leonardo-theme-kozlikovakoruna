@@ -1,0 +1,65 @@
+{% extends widget.get_base_template %}
+{% load feincms_page_tags %}
+
+{% block content %}
+<div id="nav-icon3">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <div id="menu">
+    {% feincms_nav root level=level depth=1 as toplevel %}
+  <ul class="nav navbar-nav{% if widget.align == 'right' %} navbar-right{% endif %}">
+  {% if depth == 1 %}
+  {% for page in toplevel %}
+    <li>
+      <a href="{{ page.get_navigation_url }}">{{ page.title }}</a>
+    </li>
+  {% endfor %}
+  {% else %}
+  {% for page in toplevel %}
+    {% feincms_nav page level=level2 depth=1 as sublevel %}
+    {% if sublevel|length == 0 %}
+    <li>
+      <a href="{{ page.get_navigation_url }}">{{ page.title }}</a>
+    </li>
+    {% else %}
+    <li class="dropdown {% if page|is_equal_or_parent_of:current %}active{% endif %}">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="{{ page.get_navigation_url }}">{{ page.title }} <span class="caret"></span></a>
+      <ul class="dropdown-menu">
+      {% for subpage in sublevel %}
+        <li class="{% if subpage|is_equal_or_parent_of:current %}active{% endif %}">
+          <a href="{{ subpage.get_navigation_url }}">{{ subpage.title }}</a>
+        </li>
+      {% endfor %}
+      </ul>
+    </li>
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+    </ul>
+  </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#nav-icon3').click(function(){
+    $(this).toggleClass('open');
+  });
+});
+$(document).ready(function(){
+    $('#nav-icon3').click(function(event){
+        event.stopPropagation();
+         $("#menu").slideToggle("fast");
+    });
+    $("#menu").on("click", function (event) {
+        event.stopPropagation();
+    });
+});
+$(document).on("click", function () {
+  if ($("#nav-icon3").hasClass("open")) {
+    $("#menu").hide();
+    $('#nav-icon3').toggleClass('open');
+  }
+});
+</script>
+{% endblock %}

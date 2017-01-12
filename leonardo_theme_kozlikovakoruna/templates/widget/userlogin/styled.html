@@ -1,0 +1,13 @@
+{% extends widget.get_base_template %}
+
+{% load i18n %}
+
+{% block content %}
+  {% if request.user.is_authenticated %}
+  <a class="btn btn-default" data-toggle="control-sidebar" href="#">{{ request.user.username }}</a></button>
+  <a class="btn btn-default" href="{% url 'logout' %}?next={{ next }}">{% trans "Sign Out" %}</a></button>
+  {% else %}
+  <a class="btn btn-default ajax-modal" href="{% url 'login' %}?next={{ next }}">{% trans "Sign In" %}</a></button>
+  <a class="btn btn-default ajax-modal" href="{% url 'signup' %}?next={{ next }}">{% trans "Sign Up" %}</a></button>
+  {% endif %}
+{% endblock %}
